@@ -50,6 +50,17 @@ def filter_and_process_events(input_filepath):
                 start_ts = first_schedule.get('start_ts')
                 end_ts = first_schedule.get('end_ts')
 
+                capacity_calculated = None
+                # Access schedules, then the first schedule
+                first_schedule = event.get('schedules', [{}])[0] # Default to empty dict if schedules is empty
+                
+                # Access performances, then the first performance
+                first_performance = first_schedule.get('performances', [{}])[0] # Default to empty dict if performances is empty
+                
+                # Access properties, then 'capacity.calculated'
+                properties = first_performance.get('properties', {})
+                capacity_calculated = properties.get('capacity.calculated')
+
                 processed_event = {
                     'event_id': event_id,
                     'name': event.get('name'),
@@ -57,8 +68,8 @@ def filter_and_process_events(input_filepath):
                     'venue_name': venue_name,
                     'start_ts': start_ts,
                     'end_ts': end_ts,
+                    'capacity_calculated': capacity_calculated,
                     # 'coords': None, # Not present in example, omitting for now
-                    # 'capacity.calculated': None # Not present in example, omitting for now
                 }
                 filtered_events.append(processed_event)
                 seen_event_ids.add(event_id)
